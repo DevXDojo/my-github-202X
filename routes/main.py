@@ -55,10 +55,14 @@ def load():
     """Endpoint to load user data."""
     data = request.json
 
-    access_token = str(data.get("access_token"))
-    username = str(data.get("username"))
-    timezone = str(data.get("timezone"))
-    year = int(data.get("year"))
+    if data is None:
+        return jsonify({"redirect_url": url_for("auth.index")})
+
+    access_token = str(data.get("access_token", ""))
+    username = str(data.get("username", ""))
+    timezone = str(data.get("timezone", ""))
+    year_val = data.get("year")
+    year = int(year_val) if year_val is not None else 0
 
     # Validate request data
     if not DataService.validate_request_data(access_token, username, timezone, year):
